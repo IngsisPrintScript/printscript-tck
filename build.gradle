@@ -27,9 +27,15 @@ test {
 }
 
 dependencies {
-    implementation("PrintScript:com.ingsis.interpreter:1.0.0-b94c1a5")
-    implementation("PrintScript:com.ingsis.result:1.0.0-b94c1a5")
-    implementation("PrintScript:com.ingsis.result.factory:1.0.0-b94c1a5")
+    implementation("PrintScript:com.ingsis.engine:1.0.0-aa81d23")
+    implementation("PrintScript:com.ingsis.interpreter:1.0.0-aa81d23")
+    implementation("PrintScript:com.ingsis.lexer:1.0.0-aa81d23")
+    implementation("PrintScript:com.ingsis.syntactic:1.0.0-aa81d23")
+    implementation("PrintScript:com.ingsis.tokens:1.0.0-aa81d23")
+    implementation("PrintScript:com.ingsis.runtime:1.0.0-aa81d23")
+    implementation("PrintScript:com.ingsis.nodes:1.0.0-aa81d23")
+    implementation("PrintScript:com.ingsis.result:1.0.0-aa81d23")
+    implementation("PrintScript:com.ingsis.result.factory:1.0.0-aa81d23")
     testImplementation 'junit:junit:4.13.1'    
 }
 
