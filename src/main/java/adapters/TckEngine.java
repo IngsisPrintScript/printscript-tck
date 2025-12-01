@@ -39,7 +39,7 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
 
   @Override
   public void format(InputStream src, String version, InputStream config, Writer writer) {
-    Result<String> result = engine.format(src, config, writer, Version.valueOf(version));
+    Result<String> result = engine.format(src, config, writer, Version.fromString(version));
     if (!result.isCorrect()) {
       System.err.println(result.error());
     }
@@ -64,7 +64,7 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
 
         // --- Pasar un nuevo InputStream al engine ---
         try (InputStream srcCopy = new ByteArrayInputStream(allBytes)) {
-          Result<String> interpretResult = engine.interpret(src, Version.valueOf(version));
+          Result<String> interpretResult = engine.interpret(src, Version.fromString(version));
 
           if (!interpretResult.isCorrect()) {
             System.err.println(
