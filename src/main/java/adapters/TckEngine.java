@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 import com.ingsis.engine.Engine;
+import com.ingsis.engine.versions.Version;
 import com.ingsis.runtime.DefaultRuntime;
 import com.ingsis.utils.result.Result;
 
@@ -29,7 +30,7 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
   @Override
   public void lint(InputStream src, String version, InputStream config, ErrorHandler handler) {
     try (var redirect = new SystemRedirection(handler)) {
-      Result<String> result = engine.analyze(src, config);
+      Result<String> result = engine.analyze(src, config, Version.fromString(version));
       if (!result.isCorrect()) {
         System.err.println(result.error());
       }
@@ -38,7 +39,7 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
 
   @Override
   public void format(InputStream src, String version, InputStream config, Writer writer) {
-    Result<String> result = engine.format(src, config, writer);
+    Result<String> result = engine.format(src, config, writer, Version.valueOf(version));
     if (!result.isCorrect()) {
       System.err.println(result.error());
     }
@@ -63,7 +64,7 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
 
         // --- Pasar un nuevo InputStream al engine ---
         try (InputStream srcCopy = new ByteArrayInputStream(allBytes)) {
-          Result<String> interpretResult = engine.interpret(srcCopy);
+          Result<String> interpretResult = engine.interpret(src, Version.valueOf(version));
 
           if (!interpretResult.isCorrect()) {
             System.err.println(
