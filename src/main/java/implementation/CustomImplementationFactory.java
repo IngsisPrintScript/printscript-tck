@@ -1,6 +1,8 @@
 package implementation;
 
-import adapters.InterpreterAdapter;
+import com.ingsis.engine.InMemoryEngine;
+
+import adapters.TckEngine;
 import interpreter.PrintScriptFormatter;
 import interpreter.PrintScriptInterpreter;
 import interpreter.PrintScriptLinter;
@@ -9,22 +11,16 @@ public class CustomImplementationFactory implements PrintScriptFactory {
 
   @Override
   public PrintScriptInterpreter interpreter() {
-    return new InterpreterAdapter();
+    return new TckEngine(new InMemoryEngine());
   }
 
   @Override
   public PrintScriptFormatter formatter() {
-    // your PrintScript formatter should be returned here.
-    // make sure to ADAPT your formatter to PrintScriptFormatter interface.
-    throw new NotImplementedException("Needs implementation"); // TODO: implement
-
-    // Dummy impl: return (src, version, config, writer) -> { };
+    return new TckEngine(new InMemoryEngine());
   }
 
   @Override
   public PrintScriptLinter linter() {
-    // your PrintScript linter should be returned here.
-    // make sure to ADAPT your linter to PrintScriptLinter interface.
-    throw new NotImplementedException("Needs implementation"); // TODO: implement
+    return new TckEngine(new InMemoryEngine());
   }
 }
