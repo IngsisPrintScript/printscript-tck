@@ -5,15 +5,14 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-// TODO: uncomment to be able to fetch packages in your own repository
-//    maven {
-//        name = "GitHubPackages"
-//        url = uri("https://maven.pkg.github.com/<your-username>/printscript")
-//        credentials {
-//            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-//            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-//        }
-//    }
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/IngsisPrintScript/PrintScript")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        }
+    }
 }
 
 java {
@@ -23,11 +22,23 @@ java {
 }
 
 test {
-    minHeapSize = "5m" // initial heap size
+    minHeapSize = "4m" // initial heap size
     maxHeapSize = "7m" // maximum heap size
+
+    maxParallelForks = 1
+    forkEvery = 1
 }
 
 dependencies {
+    implementation("PrintScript:com.ingsis.charstream")
+    implementation("PrintScript:com.ingsis.engine")
+    implementation("PrintScript:com.ingsis.formatter")
+    implementation("PrintScript:com.ingsis.interpreter")
+    implementation("PrintScript:com.ingsis.lexer")
+    implementation("PrintScript:com.ingsis.parser")
+    implementation("PrintScript:com.ingsis.sca")
+    implementation("PrintScript:com.ingsis.utils")
+
     testImplementation 'junit:junit:4.13.1'
 }
 
