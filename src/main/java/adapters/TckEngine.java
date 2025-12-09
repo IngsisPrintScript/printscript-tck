@@ -10,8 +10,8 @@ import java.nio.file.StandardOpenOption;
 
 import com.ingsis.engine.Engine;
 import com.ingsis.engine.versions.Version;
-import com.ingsis.runtime.DefaultRuntime;
 import com.ingsis.utils.result.Result;
+import com.ingsis.utils.runtime.DefaultRuntime;
 
 import interpreter.ErrorHandler;
 import interpreter.InputProvider;

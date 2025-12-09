@@ -33,7 +33,6 @@ dependencies {
     implementation("PrintScript:com.ingsis.interpreter")
     implementation("PrintScript:com.ingsis.lexer")
     implementation("PrintScript:com.ingsis.parser")
-    implementation("PrintScript:com.ingsis.runtime")
     implementation("PrintScript:com.ingsis.sca")
     implementation("PrintScript:com.ingsis.utils")
 
