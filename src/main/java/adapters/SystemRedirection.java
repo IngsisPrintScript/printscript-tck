@@ -86,7 +86,7 @@ public final class SystemRedirection implements AutoCloseable {
           buffer.setLength(0);
         }
       }
-    }, true); // autoFlush = true
+    }, true); 
   }
 
   // ----------------------
