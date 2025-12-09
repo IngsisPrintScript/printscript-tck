@@ -49,33 +49,17 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
   public void execute(InputStream src, String version, PrintEmitter emitter, ErrorHandler handler,
       InputProvider provider) {
     try (var redirect = new SystemRedirection(provider, emitter, handler)) {
-
       DefaultRuntime.getInstance().push();
+      Result<String> interpretResult = engine.interpret(src, Version.fromString(version));
 
-      try {
-        // --- Leer todo el InputStream ---
-        byte[] allBytes = src.readAllBytes();
+      if (!interpretResult.isCorrect()) {
+        System.err.println(interpretResult.error());
+      }
 
-        // --- Escribir todo el contenido a debug.log ---
-        Path debugFile = Path.of("debug.log");
-        String content = new String(allBytes, StandardCharsets.UTF_8);
-        Files.writeString(debugFile, content + System.lineSeparator(),
-            StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-        // --- Pasar un nuevo InputStream al engine ---
-        try (InputStream srcCopy = new ByteArrayInputStream(allBytes)) {
-          Result<String> interpretResult = engine.interpret(srcCopy, Version.fromString(version));
-
-          if (!interpretResult.isCorrect()) {
-            System.err.println(interpretResult.error());
-          }
-        }
-
+      } catch (OutOfMemoryError err) {
+        System.err.println("Java heap space");
       } finally {
         DefaultRuntime.getInstance().pop();
       }
-    } catch (Exception exception) {
-      exception.printStackTrace(System.err);
-    }
   }
 }
