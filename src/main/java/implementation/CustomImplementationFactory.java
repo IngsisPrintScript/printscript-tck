@@ -24,7 +24,7 @@ public class CustomImplementationFactory implements PrintScriptFactory {
 
     @Override
     public PrintScriptLinter linter() {
-        return build();
+        return new TckEngine(new InMemoryEngine());
     }
 
     private TckEngine build() {

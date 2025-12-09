@@ -27,15 +27,15 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
     this.engine = engine;
   }
 
-  @Override
-  public void lint(InputStream src, String version, InputStream config, ErrorHandler handler) {
-    try (var redirect = new SystemRedirection(handler)) {
-      Result<String> result = engine.analyze(src, config, Version.fromString(version));
-      if (!result.isCorrect()) {
-        System.err.println(result.error());
-      }
+    @Override
+    public void lint(InputStream src, String version, InputStream config, ErrorHandler handler) {
+        try (var redirect = new SystemRedirection(handler)) {
+            Result<String> result = engine.analyze(src, config, Version.fromString(version));
+            if (!result.isCorrect()) {
+                System.err.println(result.error());
+            }
+        }
     }
-  }
 
   @Override
   public void format(InputStream src, String version, InputStream config, Writer writer) {
@@ -55,7 +55,7 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
                         engine.interpret(src, Version.fromString(version));
 
                 if (!interpretResult.isCorrect()) {
-                    System.err.println(interpretResult.error());
+                    handler.reportError(interpretResult.error());
                 }
 
             } finally {
