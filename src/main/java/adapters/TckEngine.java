@@ -64,13 +64,10 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
 
         // --- Pasar un nuevo InputStream al engine ---
         try (InputStream srcCopy = new ByteArrayInputStream(allBytes)) {
-          Result<String> interpretResult = engine.interpret(src, Version.fromString(version));
+          Result<String> interpretResult = engine.interpret(srcCopy, Version.fromString(version));
 
           if (!interpretResult.isCorrect()) {
-            System.err.println(
-                DefaultRuntime.getInstance()
-                    .getExecutionError()
-                    .error());
+            System.err.println(interpretResult.error());
           }
         }
 
@@ -78,7 +75,7 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
         DefaultRuntime.getInstance().pop();
       }
     } catch (Exception exception) {
-      System.err.println(exception.getMessage());
+      exception.printStackTrace(System.err);
     }
   }
 }
