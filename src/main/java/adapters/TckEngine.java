@@ -45,37 +45,27 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
     }
   }
 
-  @Override
-  public void execute(InputStream src, String version, PrintEmitter emitter, ErrorHandler handler,
-      InputProvider provider) {
-    try (var redirect = new SystemRedirection(provider, emitter, handler)) {
+    @Override
+    public void execute(InputStream src, String version, PrintEmitter emitter,
+                        ErrorHandler handler, InputProvider provider) {
+        try (var redirect = new SystemRedirection(provider, emitter, handler)) {
+            DefaultRuntime.getInstance().push();
+            try {
+                Result<String> interpretResult =
+                        engine.interpret(src, Version.fromString(version));
 
-      DefaultRuntime.getInstance().push();
+                if (!interpretResult.isCorrect()) {
+                    System.err.println(interpretResult.error());
+                }
 
-      try {
-        // --- Leer todo el InputStream ---
-        byte[] allBytes = src.readAllBytes();
+            } finally {
+                DefaultRuntime.getInstance().pop();
+            }
 
-        // --- Escribir todo el contenido a debug.log ---
-        Path debugFile = Path.of("debug.log");
-        String content = new String(allBytes, StandardCharsets.UTF_8);
-        Files.writeString(debugFile, content + System.lineSeparator(),
-            StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-        // --- Pasar un nuevo InputStream al engine ---
-        try (InputStream srcCopy = new ByteArrayInputStream(allBytes)) {
-          Result<String> interpretResult = engine.interpret(srcCopy, Version.fromString(version));
-
-          if (!interpretResult.isCorrect()) {
-            System.err.println(interpretResult.error());
-          }
+        } catch (OutOfMemoryError error) {
+            handler.reportError("Java heap space");
+        } catch (Exception exception) {
+            handler.reportError(exception.getMessage());
         }
-
-      } finally {
-        DefaultRuntime.getInstance().pop();
-      }
-    } catch (Exception exception) {
-      exception.printStackTrace(System.err);
     }
-  }
 }
