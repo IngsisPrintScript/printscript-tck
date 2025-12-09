@@ -61,32 +61,32 @@ public final class SystemRedirection implements AutoCloseable {
   // Output Redirection
   // ----------------------
   private PrintStream createPrintStream(PrintEmitter emitter) {
-    return new PrintStream(new OutputStream() {
-      private final StringBuilder buffer = new StringBuilder();
+      return new PrintStream(new OutputStream() {
+          private final StringBuilder buffer = new StringBuilder();
 
-      @Override
-      public void write(int b) {
-        char c = (char) b;
-        buffer.append(c);
+          @Override
+          public void write(int b) {
+              char c = (char) b;
+              buffer.append(c);
 
-        // Flush on newline
-        if (c == '\n') {
-          flushBuffer();
-        }
-      }
+              if (c == '\n') {
+                  flushBuffer();
+              }
+          }
 
-      @Override
-      public void flush() {
-        flushBuffer();
-      }
+          @Override
+          public void flush() {
+              flushBuffer();
+          }
 
-      private void flushBuffer() {
-        if (buffer.length() > 0) {
-          emitter.print(buffer.toString().trim());
-          buffer.setLength(0);
-        }
-      }
-    }, true); // autoFlush = true
+          private void flushBuffer() {
+              String msg = buffer.toString();
+              if (!msg.isBlank()) {
+                  emitter.print(msg.trim());
+              }
+              buffer.setLength(0);
+          }
+      }, true);
   }
 
   // ----------------------
