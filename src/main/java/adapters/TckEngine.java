@@ -49,8 +49,6 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
         System.err.println(DefaultRuntime.getInstance().getExecutionError().error());
       }
       System.gc();
-    } catch (OutOfMemoryError err) {
-      handler.reportError("Java heap space");
     } catch (Exception e) {
       handler.reportError(e.getMessage());
     } finally {
