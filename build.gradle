@@ -22,7 +22,7 @@ java {
 }
 
 test {
-    minHeapSize = "4m" // initial heap size
+    minHeapSize = "5m" // initial heap size
     maxHeapSize = "7m" // maximum heap size
 
     maxParallelForks = 1

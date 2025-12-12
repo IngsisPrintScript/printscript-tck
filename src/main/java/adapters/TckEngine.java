@@ -1,12 +1,7 @@
 package adapters;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 import com.ingsis.engine.Engine;
 import com.ingsis.engine.versions.Version;
@@ -50,16 +45,16 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
       InputProvider provider) {
     try (var redirect = new SystemRedirection(provider, emitter, handler)) {
       DefaultRuntime.getInstance().push();
-      Result<String> interpretResult = engine.interpret(src, Version.fromString(version));
-
-      if (!interpretResult.isCorrect()) {
-        System.err.println(interpretResult.error());
+      if (!engine.interpret(src, Version.fromString(version)).isCorrect()) {
+        System.err.println(DefaultRuntime.getInstance().getExecutionError().error());
       }
-
-      } catch (OutOfMemoryError err) {
-        System.err.println("Java heap space");
-      } finally {
-        DefaultRuntime.getInstance().pop();
-      }
+      System.gc();
+    } catch (OutOfMemoryError err) {
+      handler.reportError("Java heap space");
+    } catch (Exception e) {
+      handler.reportError(e.getMessage());
+    } finally {
+      DefaultRuntime.getInstance().pop();
+    }
   }
 }
