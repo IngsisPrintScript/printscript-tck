@@ -2,6 +2,7 @@ package adapters;
 
 import java.io.InputStream;
 import java.io.Writer;
+import java.util.List;
 
 import com.ingsis.engine.Engine;
 import com.ingsis.engine.versions.Version;
@@ -15,7 +16,11 @@ import interpreter.PrintScriptFormatter;
 import interpreter.PrintScriptInterpreter;
 import interpreter.PrintScriptLinter;
 
-public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, PrintScriptLinter {
+public class TckEngine
+        implements PrintScriptInterpreter, PrintScriptFormatter, PrintScriptLinter {
+
+  private static final boolean DEBUG_TCK = false; // ← activalo solo para debug
+
   private final Engine engine;
 
   public TckEngine(Engine engine) {
@@ -24,11 +29,9 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
 
   @Override
   public void lint(InputStream src, String version, InputStream config, ErrorHandler handler) {
-    try (var redirect = new SystemRedirection(handler)) {
-      Result<String> result = engine.analyze(src, config, Version.fromString(version));
-      if (!result.isCorrect()) {
-        System.err.println(result.error());
-      }
+    Result<String> result = engine.analyze(src, config, Version.fromString(version));
+    if (!result.isCorrect()) {
+      handler.reportError(result.error());
     }
   }
 
@@ -36,23 +39,32 @@ public class TckEngine implements PrintScriptInterpreter, PrintScriptFormatter, 
   public void format(InputStream src, String version, InputStream config, Writer writer) {
     Result<String> result = engine.format(src, config, writer, Version.fromString(version));
     if (!result.isCorrect()) {
-      System.err.println(result.error());
     }
   }
 
   @Override
-  public void execute(InputStream src, String version, PrintEmitter emitter, ErrorHandler handler,
-      InputProvider provider) {
-    try (var redirect = new SystemRedirection(provider, emitter, handler)) {
-      DefaultRuntime.getInstance().push();
-      if (!engine.interpret(src, Version.fromString(version)).isCorrect()) {
-        System.err.println(DefaultRuntime.getInstance().getExecutionError().error());
+  public void execute(
+          InputStream src,
+          String version,
+          PrintEmitter emitter,
+          ErrorHandler handler,
+          InputProvider provider) {
+    DefaultRuntime runtime = DefaultRuntime.getInstance();
+    runtime.setEmitter(new RuntimePrintEmitterAdapter(emitter));
+    runtime.push();
+    try {
+      Result<String> result =
+              engine.interpret(src, Version.fromString(version));
+      if (!result.isCorrect() && runtime.getExecutionError() != null) {
+        handler.reportError(runtime.getExecutionError().error());
       }
-      System.gc();
-    } catch (Exception e) {
-      handler.reportError(e.getMessage());
+    } catch (OutOfMemoryError oom) {
+      handler.reportError("Java heap space");
+
     } finally {
-      DefaultRuntime.getInstance().pop();
+      runtime.setExecutionError(null);
+      runtime.setEmitter(null);
+      runtime.pop();
     }
   }
 }

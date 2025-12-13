@@ -23,10 +23,7 @@ java {
 
 test {
     minHeapSize = "5m" // initial heap size
-    maxHeapSize = "7m" // maximum heap size
-
-    maxParallelForks = 1
-    forkEvery = 1
+    maxHeapSize = "6m" // maximum heap size
 }
 
 dependencies {
