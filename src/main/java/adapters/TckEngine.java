@@ -17,7 +17,7 @@ import interpreter.PrintScriptInterpreter;
 import interpreter.PrintScriptLinter;
 
 public class TckEngine
-        implements PrintScriptInterpreter, PrintScriptFormatter, PrintScriptLinter {
+    implements PrintScriptInterpreter, PrintScriptFormatter, PrintScriptLinter {
 
   private static final boolean DEBUG_TCK = false; // ← activalo solo para debug
 
@@ -44,23 +44,21 @@ public class TckEngine
 
   @Override
   public void execute(
-          InputStream src,
-          String version,
-          PrintEmitter emitter,
-          ErrorHandler handler,
-          InputProvider provider) {
+      InputStream src,
+      String version,
+      PrintEmitter emitter,
+      ErrorHandler handler,
+      InputProvider provider) {
     DefaultRuntime runtime = DefaultRuntime.getInstance();
     runtime.setEmitter(new RuntimePrintEmitterAdapter(emitter));
     runtime.push();
     try {
-      Result<String> result =
-              engine.interpret(src, Version.fromString(version));
+      Result<String> result = engine.interpret(src, Version.fromString(version));
       if (!result.isCorrect() && runtime.getExecutionError() != null) {
         handler.reportError(runtime.getExecutionError().error());
       }
-    } catch (OutOfMemoryError oom) {
-      handler.reportError("Java heap space");
-
+    } catch (Exception exception) {
+      handler.reportError(exception.getMessage());
     } finally {
       runtime.setExecutionError(null);
       runtime.setEmitter(null);
