@@ -1,6 +1,7 @@
 package implementation;
 
 import com.ingsis.engine.InMemoryEngine;
+import com.ingsis.engine.LoggerEngine;
 
 import adapters.TckEngine;
 import com.ingsis.utils.iterator.safe.result.DefaultIterationResultFactory;

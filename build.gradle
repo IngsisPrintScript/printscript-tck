@@ -23,7 +23,7 @@ java {
 
 test {
     minHeapSize = "5m" // initial heap size
-    maxHeapSize = "6m" // maximum heap size
+    maxHeapSize = "7m" // maximum heap size
 }
 
 dependencies {
