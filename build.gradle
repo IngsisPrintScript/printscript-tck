@@ -27,14 +27,14 @@ test {
 }
 
 dependencies {
-    implementation("PrintScript:com.ingsis.charstream")
-    implementation("PrintScript:com.ingsis.engine")
-    implementation("PrintScript:com.ingsis.formatter")
-    implementation("PrintScript:com.ingsis.interpreter")
-    implementation("PrintScript:com.ingsis.lexer")
-    implementation("PrintScript:com.ingsis.parser")
-    implementation("PrintScript:com.ingsis.sca")
-    implementation("PrintScript:com.ingsis.utils")
+    implementation("PrintScript:com.ingsis.charstream:0.0.0-ci.88.49f95a0")
+    implementation("PrintScript:com.ingsis.engine:0.0.0-ci.88.49f95a0")
+    implementation("PrintScript:com.ingsis.formatter:0.0.0-ci.88.49f95a0")
+    implementation("PrintScript:com.ingsis.interpreter:0.0.0-ci.88.49f95a0")
+    implementation("PrintScript:com.ingsis.lexer:0.0.0-ci.88.49f95a0")
+    implementation("PrintScript:com.ingsis.parser:0.0.0-ci.88.49f95a0")
+    implementation("PrintScript:com.ingsis.sca:0.0.0-ci.88.49f95a0")
+    implementation("PrintScript:com.ingsis.utils:0.0.0-ci.88.49f95a0")
 
     testImplementation 'junit:junit:4.13.1'
 }
