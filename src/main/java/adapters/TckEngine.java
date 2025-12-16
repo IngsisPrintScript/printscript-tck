@@ -2,12 +2,10 @@ package adapters;
 
 import java.io.InputStream;
 import java.io.Writer;
-import java.util.List;
 
 import com.ingsis.engine.Engine;
 import com.ingsis.engine.versions.Version;
 import com.ingsis.utils.result.Result;
-import com.ingsis.utils.runtime.DefaultRuntime;
 
 import interpreter.ErrorHandler;
 import interpreter.InputProvider;
@@ -18,8 +16,6 @@ import interpreter.PrintScriptLinter;
 
 public class TckEngine
     implements PrintScriptInterpreter, PrintScriptFormatter, PrintScriptLinter {
-
-  private static final boolean DEBUG_TCK = false; // ← activalo solo para debug
 
   private final Engine engine;
 
@@ -37,9 +33,7 @@ public class TckEngine
 
   @Override
   public void format(InputStream src, String version, InputStream config, Writer writer) {
-    Result<String> result = engine.format(src, config, writer, Version.fromString(version));
-    if (!result.isCorrect()) {
-    }
+    engine.format(src, config, writer, Version.fromString(version));
   }
 
   @Override
@@ -49,20 +43,17 @@ public class TckEngine
       PrintEmitter emitter,
       ErrorHandler handler,
       InputProvider provider) {
-    DefaultRuntime runtime = DefaultRuntime.getInstance();
-    runtime.setEmitter(new RuntimePrintEmitterAdapter(emitter));
-    runtime.push();
     try {
-      Result<String> result = engine.interpret(src, Version.fromString(version));
-      if (!result.isCorrect() && runtime.getExecutionError() != null) {
-        handler.reportError(runtime.getExecutionError().error());
+      Result<String> result = engine.interpret(
+          Version.fromString(version),
+          new OutputEmitterAdapter(emitter),
+          new InputSupplierAdapter(provider),
+          src);
+      if (!result.isCorrect()) {
+        handler.reportError(result.error());
       }
     } catch (Exception exception) {
       handler.reportError(exception.getMessage());
-    } finally {
-      runtime.setExecutionError(null);
-      runtime.setEmitter(null);
-      runtime.pop();
     }
   }
 }
