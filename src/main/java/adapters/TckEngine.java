@@ -52,7 +52,7 @@ public class TckEngine
       if (!result.isCorrect()) {
         handler.reportError(result.error());
       }
-    } catch (Exception exception) {
+    } catch (OutOfMemoryError exception) {
       handler.reportError(exception.getMessage());
     }
   }
